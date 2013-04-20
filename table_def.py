@@ -4,7 +4,7 @@ from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
-engine = create_engine('sqlite:///irclog.db', echo=True)
+engine = create_engine('sqlite:///db/irclog.db', echo=True)
 Base = declarative_base()
 
 # Define

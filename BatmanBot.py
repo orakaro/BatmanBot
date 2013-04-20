@@ -50,7 +50,7 @@ class BatmanBot(SingleServerIRCBot):
 
 #   SQLAlchemy
     def log(self, date, user, content):
-        engine = create_engine('sqlite:///irclog.db', echo=True)
+        engine = create_engine('sqlite:///db/irclog.db', echo=True)
         Session = sessionmaker(bind=engine)
         session = Session()
         chatlog = ChatLog(date,user,content)
@@ -58,7 +58,7 @@ class BatmanBot(SingleServerIRCBot):
         session.commit()
 
     def query(self, date):
-        engine = create_engine('sqlite:///irclog.db', echo=True)
+        engine = create_engine('sqlite:///db/irclog.db', echo=True)
         Session = sessionmaker(bind=engine)
         session = Session()
         res = session.query(ChatLog).filter("strftime('%Y-%m-%d',date) =:qdate").params(qdate=date).all()
@@ -105,19 +105,15 @@ class BatmanBot(SingleServerIRCBot):
         return True
 
     def let_me_see_you(self, cmd):
-        ns={}
-        env=""
-        for i in self.safe_dict:
-            env=env+str(i+"="+str(self.safe_dict[i]))+"\n"
-        code=compile(env+"rel="+cmd,'<string>','exec')
-        exec code in ns
-        keys=ns.keys()
-        values=ns.values()
-        keys.pop(-1)
-        keys.pop(0)
-        values.pop(-1)
-        values.pop(0)
-        scope=dict(zip(keys,values))
+        exec(cmd,{"__builtins__":None},self.safe_dict)
+        keys=locals().keys()
+        keys.remove('__doc__')
+        keys.remove('__name__')
+        keys.remove('__package__')
+        keys.remove('__builtins__')
+        scope={i:1 for i in keys}
+        for j in scope:
+            scope[i]=globals()[i]
         self.safe_dict=dict(self.safe_dict.items()+scope.items())
 
 #    Private message
