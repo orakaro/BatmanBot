@@ -1,14 +1,9 @@
 #! /usr/bin/env python
 #
-# Example program using ircbot.py.
 #
-# Joel Rosdahl <joel@rosdahl.net>
-#
-# Modified by Vu Nhat Minh <dtvd88@yahoo.com> 
+# Vu Nhat Minh <dtvd88@yahoo.com> 
 
 """ IRC bot listen and log all chat to sqlite and print out with commands
-
-The known commands are:
 
     stats -- Prints some channel information.
 
@@ -29,9 +24,7 @@ The known commands are:
 
 """
 
-import re, math, sys, subprocess 
-from subprocess import Popen, PIPE
-from cStringIO import StringIO
+import re, math, sys 
 from time import sleep
 from datetime import datetime
 from sqlalchemy import create_engine
@@ -44,22 +37,22 @@ class BatmanBot(SingleServerIRCBot):
     pyflg=True
     buf=[]
     safe_dict={}
+    engine= None
     def __init__(self, channel, nickname, server, port=6667):
         SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
         self.channel = channel
+        self.engine = create_engine('sqlite:///db/irclog.db', echo=True)
 
 #   SQLAlchemy
     def log(self, date, user, content):
-        engine = create_engine('sqlite:///db/irclog.db', echo=True)
-        Session = sessionmaker(bind=engine)
+        Session = sessionmaker(bind=self.engine)
         session = Session()
         chatlog = ChatLog(date,user,content)
         session.add(chatlog)
         session.commit()
 
     def query(self, date):
-        engine = create_engine('sqlite:///db/irclog.db', echo=True)
-        Session = sessionmaker(bind=engine)
+        Session = sessionmaker(bind=self.engine)
         session = Session()
         res = session.query(ChatLog).filter("strftime('%Y-%m-%d',date) =:qdate").params(qdate=date).all()
         return res
@@ -89,10 +82,8 @@ class BatmanBot(SingleServerIRCBot):
 
     def on_join(self, c, e):
         nick = nm_to_n(e.source())
-        ch = self.channel
         if irc_lower(nick) != irc_lower(self.connection.get_nickname()):
-            c.privmsg(ch, nick+": You can ask me \"stats\" or \"chatlog %Y-%m-%d\" or \"dcc\" if want to chat dcc with me")
-            c.privmsg(ch, nick+": Or do you just want to chat with a calculator :D")
+            self.yessir(c, e)
         self.sendit()
 
 #    Validate
@@ -204,7 +195,8 @@ class BatmanBot(SingleServerIRCBot):
                 ip_quad_to_numstr(dcc.localaddress),
                 dcc.localport))
         elif cmd == "chatlog":
-            c.privmsg(nick, "Which day ? (ex: \"2013-04-18\"): ")
+            c.privmsg(ch, "Want to check the web first ? http://133.19.60.91:5000/irc/0 ")
+            c.privmsg(ch, "Or not? Choose day and check private message (ex: \"2013-04-18\"): ")
         elif re.match(r'(\d{4}-\d{2}-\d{2})',cmd):
             param = cmd
             self.rep_log(c, e, param)
@@ -232,7 +224,7 @@ class BatmanBot(SingleServerIRCBot):
                         else:
                             c.privmsg(ch, ": Yep of course"+cmd[12:])
                     else:
-                        c.privmsg(ch, ": whois "+words[3]+" ?")
+                        c.privmsg(ch, ": who is "+words[3]+" ?")
                 elif cmd in ("hi","hello","Hi","Hello"):
                     c.privmsg(ch, "Nice day "+nick)
                 else:
