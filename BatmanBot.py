@@ -106,13 +106,13 @@ class BatmanBot(SingleServerIRCBot):
 
     def let_me_see_you(self, cmd):
         exec(cmd,{"__builtins__":None},self.safe_dict)
-        keys=locals().keys()
+        keys=globals().keys()
         keys.remove('__doc__')
         keys.remove('__name__')
         keys.remove('__package__')
         keys.remove('__builtins__')
         scope={i:1 for i in keys}
-        for j in scope:
+        for i in scope:
             scope[i]=globals()[i]
         self.safe_dict=dict(self.safe_dict.items()+scope.items())
 
@@ -217,25 +217,27 @@ class BatmanBot(SingleServerIRCBot):
             self.safe_dict={}
             c.privmsg(ch, "Welcome to "+cmd)
         else:
-            if not self.pyflg:
-                try:
-                    self.let_me_see_you(cmd)
-                    rel=eval(cmd,{"__builtins__":None},self.safe_dict)
-                    c.privmsg(ch, rel)
-                except:
-                    if cmd in ("hi","hello","Hi","Hello"):
-                        c.privmsg(ch, "Nice day "+nick)
-                    else: 
-                        c.privmsg(ch, cmd)
-            else:
-                try:
-                    self.let_me_see_you(cmd)
-                    print self.safe_dict
-                    rel=eval(cmd,{"__builtins__":None},self.safe_dict)
-                    c.privmsg(ch, rel)
-                except :
-                    c.privmsg(ch, "OK")
-                self.buf.append(cmd)
+            try:
+                self.let_me_see_you(cmd)
+                rel=eval(cmd,{"__builtins__":None},self.safe_dict)
+                c.privmsg(ch, rel)
+            except:
+                for chname, chobj in self.channels.items():
+                    mems=chobj.users()
+                words=cmd.split()
+                if cmd.lower()[:12]  == "do you think":
+                    if words[3] in mems:
+                        if words[3][:4] == "DTVD" or words[3] == "BatmanBot":
+                            c.privmsg(ch, "Nope, man :D")
+                        else:
+                            c.privmsg(ch, ": Yep of course"+cmd[12:])
+                    else:
+                        c.privmsg(ch, ": whois "+words[3]+" ?")
+                elif cmd in ("hi","hello","Hi","Hello"):
+                    c.privmsg(ch, "Nice day "+nick)
+                else:
+                    c.privmsg(ch, cmd)
+            if self.pyflg: self.buf.append(cmd)
 
 
        
