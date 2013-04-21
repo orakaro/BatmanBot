@@ -3,7 +3,9 @@
 #
 # Vu Nhat Minh <dtvd88@yahoo.com> 
 
-""" IRC bot listen and log all chat to sqlite and print out with commands
+""" Batman bot listen and log all chat to sqlite and print out with commands
+     
+    Before reading that, remember that Batman Rocks The Gotham, and Python Rocks The World
 
     stats -- Prints some channel information.
 
@@ -158,6 +160,25 @@ class BatmanBot(SingleServerIRCBot):
         c.privmsg(ch, nick+": You can ask/privmsg me \"stats\" or \"chatlog %Y-%m-%d\" or \"dcc\" if want to chat dcc with me")
         c.privmsg(ch, nick+": Or do you just want to chat with a calculator :D")
          
+    def said_you_said_me(self, c, e, cmd):
+        nick = nm_to_n(e.source())
+        ch = self.channel
+        for chname, chobj in self.channels.items():
+            mems=chobj.users()
+        words=cmd.split()
+        if cmd.lower()[:12]  == "do you think":
+            if words[3] in mems:
+                if words[3][:4] == "DTVD" or words[3] == "BatmanBot":
+                    c.privmsg(ch, "Nope, man :D")
+                else:
+                    c.privmsg(ch, ": Yep of course"+cmd[12:])
+            else:
+                c.privmsg(ch, ": who is "+words[3]+" ?")
+        elif cmd in ("hi","hello","Hi","Hello"):
+            c.privmsg(ch, "Nice day "+nick)
+        else:
+            c.privmsg(ch, cmd)
+ 
     def rep_log(self, c, e, param):
         nick = nm_to_n(e.source())
         ch = self.channel
@@ -214,25 +235,9 @@ class BatmanBot(SingleServerIRCBot):
                 rel=eval(cmd,{"__builtins__":None},self.safe_dict)
                 c.privmsg(ch, rel)
             except:
-                for chname, chobj in self.channels.items():
-                    mems=chobj.users()
-                words=cmd.split()
-                if cmd.lower()[:12]  == "do you think":
-                    if words[3] in mems:
-                        if words[3][:4] == "DTVD" or words[3] == "BatmanBot":
-                            c.privmsg(ch, "Nope, man :D")
-                        else:
-                            c.privmsg(ch, ": Yep of course"+cmd[12:])
-                    else:
-                        c.privmsg(ch, ": who is "+words[3]+" ?")
-                elif cmd in ("hi","hello","Hi","Hello"):
-                    c.privmsg(ch, "Nice day "+nick)
-                else:
-                    c.privmsg(ch, cmd)
-            if self.pyflg: self.buf.append(cmd)
+                self.said_you_said_me(c, e, cmd)
+                if self.pyflg: self.buf.append(cmd)
 
-
-       
     def many_param_command(self, c, e, cmd, param):
         nick = nm_to_n(e.source())
         ch = self.channel
@@ -243,7 +248,6 @@ def main():
     import sys
     server="irc.freenode.org"
     channel = "#ktmt.github" 
-#    channel = "#test_irc" 
     nickname = "BatmanBot" 
 
     bot = BatmanBot(channel, nickname, server)
