@@ -84,8 +84,6 @@ class BatmanBot(SingleServerIRCBot):
 
     def on_join(self, c, e):
         nick = nm_to_n(e.source())
-        if irc_lower(nick) != irc_lower(self.connection.get_nickname()):
-            self.yessir(c, e)
         self.sendit()
 
 #    Validate
@@ -112,6 +110,7 @@ class BatmanBot(SingleServerIRCBot):
 #    Private message
     def on_privmsg(self, c, e):
         nick = nm_to_n(e.source())
+        ch = self.channel
         said = e.arguments()[0]
         if len(said.split()) < 2 :
             self.one_param_command(c, e, said )
@@ -245,7 +244,6 @@ class BatmanBot(SingleServerIRCBot):
             self.rep_log(c, e, param)
 
 def main():
-    import sys
     server="irc.freenode.org"
     channel = "#ktmt.github" 
     nickname = "BatmanBot" 
