@@ -44,6 +44,7 @@ class BatmanBot(SingleServerIRCBot):
         SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
         self.channel = channel
         self.engine = create_engine('sqlite:///db/irclog.db', echo=True)
+        self.engine.raw_connection().connection.text_factory = str
 
 #   SQLAlchemy
     def log(self, date, user, content):
