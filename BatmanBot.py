@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-#
+# -*- coding: utf-8 -*-
 #
 # Vu Nhat Minh <dtvd88@yahoo.com> 
 
@@ -112,16 +112,11 @@ class BatmanBot(SingleServerIRCBot):
         nick = nm_to_n(e.source())
         ch = self.channel
         said = e.arguments()[0]
-        if len(said.split()) < 2 :
-            self.one_param_command(c, e, said )
-        else:
-            cmd = said.split()[0]
-            param = said.split()[1] 
-            self.many_param_command(c, e, cmd, param)
+        self.one_param_command(c, e, said)
 
 #    Listen on public message
     def on_pubmsg(self, c, e):
-        chat = e.arguments()[0]
+        chat = unicode(e.arguments()[0], "utf-8")
         nick = nm_to_n(e.source())
         ch = self.channel
         try:
@@ -186,7 +181,7 @@ class BatmanBot(SingleServerIRCBot):
         c.privmsg(nick, "--- Chat Log Start ---")
         for r in res:
             sleep(1) 
-            c.privmsg(nick,r.date.strftime('%Y-%m-%d:%H:%M:%S')+" <"+r.user+"> "+r.content)
+            c.privmsg(nick,(r.date.strftime('%Y-%m-%d:%H:%M:%S')+" <"+r.user+"> "+r.content).encode('utf-8'))
         c.privmsg(nick, "--- Chat Log End ---")
 
     def one_param_command(self, c, e, cmd):
