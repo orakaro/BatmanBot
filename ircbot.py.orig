@@ -42,7 +42,7 @@ class SingleServerIRCBot(SimpleIRCClient):
     have operator or voice modes.  The "database" is kept in the
     self.channels attribute, which is an IRCDict of Channels.
     """
-    def __init__(self, server_list, main, nickname, realname, reconnection_interval=60):
+    def __init__(self, server_list, nickname, realname, reconnection_interval=60):
         """Constructor for SingleServerIRCBot objects.
 
         Arguments:
@@ -62,7 +62,7 @@ class SingleServerIRCBot(SimpleIRCClient):
             connections.
         """
 
-        SimpleIRCClient.__init__(self,server_list, main)
+        SimpleIRCClient.__init__(self)
         self.channels = IRCDict()
         self.server_list = server_list
         if not reconnection_interval or reconnection_interval < 0:
@@ -71,10 +71,9 @@ class SingleServerIRCBot(SimpleIRCClient):
 
         self._nickname = nickname
         self._realname = realname
-        for c in self.conn.values():
-            for i in ["disconnect", "join", "kick", "mode",
-                      "namreply", "nick", "part", "quit"]:
-                c.add_global_handler(i,
+        for i in ["disconnect", "join", "kick", "mode",
+                  "namreply", "nick", "part", "quit"]:
+            self.connection.add_global_handler(i,
                                                getattr(self, "_on_" + i),
                                                -10)
     def _connected_checker(self):
@@ -95,21 +94,6 @@ class SingleServerIRCBot(SimpleIRCClient):
                          self._nickname,
                          password,
                          ircname=self._realname)
-        except ServerConnectionError:
-            pass
-
-    def _connect_all(self):
-        """[Internal]"""
-        password = None
-        if len(self.server_list[0]) > 2:
-            password = self.server_list[0][2]
-        try:
-            for s in self.server_list:
-                self.connect(s[0],
-                             s[1],
-                             self._nickname,
-                             password,
-                             ircname=self._realname)
         except ServerConnectionError:
             pass
 
@@ -238,18 +222,6 @@ class SingleServerIRCBot(SimpleIRCClient):
         self.server_list.append(self.server_list.pop(0))
         self._connect()
 
-    def add_server(self, msg="Changing servers"):
-        """Connect to a new server, possibly disconnecting from the current.
-
-        The bot will skip to next server in the server_list each time
-        jump_server is called.
-        """
-#        if self.connection.is_connected():
-#            self.connection.disconnect(msg)
-
-        self.server_list.append(self.server_list.pop(0))
-        self._connect()
-
     def on_ctcp(self, c, e):
         """Default handler for ctcp events.
 
@@ -271,7 +243,7 @@ class SingleServerIRCBot(SimpleIRCClient):
 
     def start(self):
         """Start the bot."""
-        self._connect_all()
+        self._connect()
         SimpleIRCClient.start(self)
 
 

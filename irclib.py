@@ -167,6 +167,9 @@ class IRC:
         c = ServerConnection(self)
         self.connections.append(c)
         return c
+    
+    def servers(self):
+        return self.connections
 
     def process_data(self, sockets):
         """Called when there is more data to read on connection sockets.
@@ -1035,9 +1038,18 @@ class SimpleIRCClient:
 
         dcc_connections -- A list of DCCConnection instances.
     """
-    def __init__(self):
+    count=0
+    conn={}
+#    Dict of {server_name:connection}
+    def __init__(self,servers_name, main):
         self.ircobj = IRC()
-        self.connection = self.ircobj.server()
+        count=len(servers_name)
+        for i in range(count):
+            self.conn[servers_name[i]] = self.ircobj.server()
+        for server_name, connection in self.conn.items():
+            if server_name[0] == main:
+                self.connection = connection
+#        self.connection = self.ircobj.server()
         self.dcc_connections = []
         self.ircobj.add_global_handler("all_events", self._dispatcher, -10)
         self.ircobj.add_global_handler("dcc_disconnect", self._dcc_disconnect, -10)
@@ -1079,7 +1091,9 @@ class SimpleIRCClient:
 
         This function can be called to reconnect a closed connection.
         """
-        self.connection.connect(server, port, nickname,
+        for server_name, connection in self.conn.items():
+            if server_name[0] == server:
+                connection.connect(server, port, nickname,
                                 password, username, ircname,
                                 localaddress, localport, ssl, ipv6)
 
