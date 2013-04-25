@@ -1038,9 +1038,7 @@ class SimpleIRCClient:
 
         dcc_connections -- A list of DCCConnection instances.
     """
-    count=0
     conn={}
-#    Dict of {server_name:connection}
     def __init__(self,servers_name, main):
         self.ircobj = IRC()
         count=len(servers_name)

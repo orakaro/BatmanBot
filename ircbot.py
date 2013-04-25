@@ -107,9 +107,9 @@ class SingleServerIRCBot(SimpleIRCClient):
             for s in self.server_list:
                 self.connect(s[0],
                              s[1],
-                             self._nickname,
+                             self._nickname[self.server_list.index(s)],
                              password,
-                             ircname=self._realname)
+                             ircname=self._realname[self.server_list.index(s)])
         except ServerConnectionError:
             pass
 
