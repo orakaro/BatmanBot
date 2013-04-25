@@ -1,6 +1,18 @@
 #! /usr/bin/env python
 ## -*- coding: utf-8 -*-
 #
+#  Do you like Python ?
+#
+#                         .-=-.          .--.
+#              __        .'     '.       /  " )
+#      _     .'  '.     /   .-.   \     /  .-'\
+#     ( \   / .-.  \   /   /   \   \   /  /    ^
+#      \ `-` /   \  `-'   /     \   `-`  /
+#       `-.-`     '.____.'       `.____.'
+#
+#
+
+
 
 """ Robinbot only talk with BatmanBot 
     

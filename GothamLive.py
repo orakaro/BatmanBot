@@ -83,7 +83,7 @@ def main():
     server=["irc.o-in.dwango.co.jp","irc.freenode.org"]
     channel = "#ktmt.github" 
     spy_channel = "#scala"
-    nickname = ["DTVD___","live_orakaro"]
+    nickname = ["DTVD___","GothamLive"]
     main = "irc.freenode.org"
 
     bot = GothamLive(channel, spy_channel, nickname, server, main)
