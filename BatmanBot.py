@@ -1,11 +1,20 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Vu Nhat Minh <dtvd88@yahoo.com> 
+#  Do you like Python ?
+#
+#                         .-=-.          .--.
+#              __        .'     '.       /  " )
+#      _     .'  '.     /   .-.   \     /  .-'\
+#     ( \   / .-.  \   /   /   \   \   /  /    ^
+#      \ `-` /   \  `-'   /     \   `-`  /
+#       `-.-`     '.____.'       `.____.'
+#
+#
 
 """ Batman bot listen and log all chat to sqlite and print out with commands
      
-    Before reading that, remember that Batman Rocks The Gotham, and Python Rocks The World
+    Before reading this , remember that Batman Rocks The Gotham, and Python Rocks The World
 
     stats -- Prints some channel information.
 
@@ -88,8 +97,7 @@ class BatmanBot(SingleServerIRCBot):
 
 #    Validate
     def validate(self, str):
-#        ary=["import","os","shlex","command","subprocess","execl","open","login","urandom"]
-        ary=[]
+        ary=["import","os","shlex","command","subprocess","execl","open","login","urandom"]
         for exploit in ary:
             if exploit in str:
                 return False
@@ -116,7 +124,10 @@ class BatmanBot(SingleServerIRCBot):
 
 #    Listen on public message
     def on_pubmsg(self, c, e):
-        chat = unicode(e.arguments()[0], "utf-8")
+        try:
+            chat = unicode(e.arguments()[0], "utf-8")
+        except:
+            chat = "### INVALID UTF-8 ###"
         nick = nm_to_n(e.source())
         ch = self.channel
         try:

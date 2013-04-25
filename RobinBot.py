@@ -1,13 +1,11 @@
 #! /usr/bin/env python
+## -*- coding: utf-8 -*-
 #
-#
-# Vu Nhat Minh <dtvd88@yahoo.com> 
 
 """ Robinbot only talk with BatmanBot 
     
 """
 
-import re, math, sys, subprocess, time
 from time import sleep
 from datetime import datetime
 from ircbot import SingleServerIRCBot
@@ -55,7 +53,6 @@ class RobinBot(SingleServerIRCBot):
 def main():
     server="irc.freenode.org"
     channel = "#ktmt.github" 
-#    channel = "#test_irc" 
     nickname = "RobinBot" 
     cmd = " ".join(sys.argv[1:])
     print cmd 
