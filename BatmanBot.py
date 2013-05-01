@@ -3,7 +3,7 @@
 #
 #  Do you like Python ?
 #
-#                         .-=-.          .--.
+#                          .-=-.          .--.
 #              __        .'     '.       /  " )
 #      _     .'  '.     /   .-.   \     /  .-'\
 #     ( \   / .-.  \   /   /   \   \   /  /    ^
@@ -264,7 +264,7 @@ class BatmanBot(SingleServerIRCBot):
 def main():
     server=["irc.freenode.org"]
     channel = "#ktmt.github" 
-    nickname = "BatmanBot" 
+    nickname = ["BatmanBot"] 
     main = "irc.freenode.org"
 
     bot = BatmanBot(channel, nickname, server, main)
