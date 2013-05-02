@@ -127,12 +127,14 @@ class BatmanBot(SingleServerIRCBot):
 
 #    Listen on public message
     def on_pubmsg(self, c, e):
+        ch = self.channel
+        nick = nm_to_n(e.source())
+        if nick[-3:].lower() == "bot":
+            return
         try:
             chat = unicode(e.arguments()[0], "utf-8")
         except:
             chat = "### INVALID UTF-8 ###"
-        nick = nm_to_n(e.source())
-        ch = self.channel
         if c.server == self.main: 
             try:
                 self.log(datetime.now(),nick,chat)
