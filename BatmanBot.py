@@ -106,6 +106,11 @@ class BatmanBot(SingleServerIRCBot):
                 return False
         return True
 
+    def bot_talking(self, nick):
+        ignore_list = ["TaskBot"]
+        if nick in ignore_list: return True
+        return False
+
     def let_me_see_you(self, cmd):
         exec(cmd,{"__builtins__":None},self.safe_dict)
         keys=globals().keys()
@@ -129,8 +134,7 @@ class BatmanBot(SingleServerIRCBot):
     def on_pubmsg(self, c, e):
         ch = self.channel
         nick = nm_to_n(e.source())
-        if nick[-3:].lower() == "bot":
-            return
+        if self.bot_talking(nick): return
         try:
             chat = unicode(e.arguments()[0], "utf-8")
         except:
