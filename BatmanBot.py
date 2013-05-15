@@ -134,9 +134,7 @@ class BatmanBot(SingleServerIRCBot):
       
         # Batman evaluate you
         try:
-#            rel = eval(s, {"__builtins__":globals()['__builtins__']}, self.safe_dict) 
-            print dir(globals()['__builtins__'])
-            rel = eval(s, self.safe_dict) 
+            rel = eval(s, {"__builtins__":globals()['__builtins__']}, self.safe_dict) 
         except:
             print traceback.format_exc()
             rel = "OK" 
