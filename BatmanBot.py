@@ -106,6 +106,50 @@ class BatmanBot(SingleServerIRCBot):
                 return False
         return True
 
+#   Safe eval function:
+    def safe_eval(self, s):
+        print "safe_eval"
+        builtins_blacklist=["__import__", "exit", "SystemExit", "compile", "execfile", "memoryview", "quit"]
+        #backup all the bad things 
+        backup = {}
+        backup['sys'] = globals()['sys']
+        try:
+            for joker_kaboom in builtins_blacklist:
+                backup_str = "globals()['__builtins__']."+joker_kaboom
+                # backup_str return  globals()['__builtins__'].__import__  ..etc
+                backup[joker_kaboom] = eval(backup_str) 
+        except: 
+            print traceback.format_exc()
+        
+        #delete them from global namespace
+        del(globals()['sys'])
+        try:
+            for joker_kaboom in builtins_blacklist:
+                kaboom = "globals()['__builtins__']."+joker_kaboom
+                del_str = "del("+kaboom+")"
+                # del_str return  del(globals()['__builtins__'].__import__)  ..etc
+                exec(del_str)
+        except: 
+            print traceback.format_exc()
+      
+        # Batman evaluate you
+        try:
+#            rel = eval(s, {"__builtins__":globals()['__builtins__']}, self.safe_dict) 
+            print dir(globals()['__builtins__'])
+            rel = eval(s, self.safe_dict) 
+        except:
+            print traceback.format_exc()
+            rel = "OK" 
+      
+        #restore global namespace
+        for joker_kaboom in builtins_blacklist:
+            takeback_str = "globals()['__builtins__']."+joker_kaboom
+            # takeback_str return  globals()['__builtins__'].__import__  ..etc
+            exec(takeback_str +" = backup[joker_kaboom]")
+        globals()['sys'] = backup['sys']
+
+        return rel
+      
     def bot_talking(self, nick):
         ignore_list = ["TaskBot"]
         if nick in ignore_list: return True
@@ -255,7 +299,10 @@ class BatmanBot(SingleServerIRCBot):
         else:
             try:
                 self.let_me_see_you(cmd)
-                rel=eval(cmd,{"__builtins__":None},self.safe_dict)
+            except:
+                pass
+            try:
+                rel=self.safe_eval(cmd)
                 c.privmsg(ch, rel)
             except:
                 self.said_you_said_me(c, e, cmd)
