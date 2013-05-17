@@ -49,12 +49,14 @@ class BatmanBot(SingleServerIRCBot):
     buf=[]
     safe_dict={}
     engine= None
-    main=""
-    def __init__(self, channel, nickname, server, main):
-        SingleServerIRCBot.__init__(self, [(s, 6667) for s in server], main, nickname, nickname)
+    main_server=""
+    pswd=""
+    def __init__(self, channel, pswd, nickname, server, main_server):
+        SingleServerIRCBot.__init__(self, [(s, 6667) for s in server], main_server, nickname, nickname)
         self.channel = channel
+        self.pswd = pswd 
         self.engine = create_engine('sqlite:///db/irclog.db', echo=True)
-        self.main = main
+        self.main_server = main_server
 
 #   SQLAlchemy
     def log(self, date, user, content):
@@ -92,7 +94,7 @@ class BatmanBot(SingleServerIRCBot):
     def on_welcome(self, c, e):
         c.privmsg("NickServ","identify BatmanBot BatmanRockTheGotham")
         print "welcome"
-        c.join(self.channel)
+        c.join(self.channel, self.pswd)
 
     def on_join(self, c, e):
         nick = nm_to_n(e.source())
@@ -149,7 +151,7 @@ class BatmanBot(SingleServerIRCBot):
         return rel
       
     def bot_talking(self, nick):
-        ignore_list = ["TaskBot"]
+        ignore_list = ["TaskBot", "bot1"]
         if nick in ignore_list: return True
         return False
 
@@ -181,7 +183,7 @@ class BatmanBot(SingleServerIRCBot):
             chat = unicode(e.arguments()[0], "utf-8")
         except:
             chat = "### INVALID UTF-8 ###"
-        if c.server == self.main: 
+        if c.server == self.main_server: 
             try:
                 self.log(datetime.now(),nick,chat)
                 a = e.arguments()[0].split(":", 1)
@@ -208,7 +210,7 @@ class BatmanBot(SingleServerIRCBot):
                 print traceback.format_exc()
         else: 
            print "live from co" 
-           main_co = self.get_conn(self.main)
+           main_co = self.get_conn(self.main_server)
            main_co.privmsg(ch, chat)
 
     def get_conn(self,server_name):
@@ -314,11 +316,12 @@ class BatmanBot(SingleServerIRCBot):
 
 def main():
     server=["irc.freenode.org"]
-    channel = "#ktmt.github" 
+    channel = "#ktmt.github.io" 
+    pswd = "GuessMe:D" 
     nickname = ["BatmanBot"] 
-    main = "irc.freenode.org"
+    main_server = "irc.freenode.org"
 
-    bot = BatmanBot(channel, nickname, server, main)
+    bot = BatmanBot(channel, pswd, nickname, server, main_server)
     bot.start()
 
 if __name__ == "__main__":
