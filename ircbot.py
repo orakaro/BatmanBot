@@ -66,7 +66,7 @@ class SingleServerIRCBot(SimpleIRCClient):
         self.channels = IRCDict()
         self.server_list = server_list
         if not reconnection_interval or reconnection_interval < 0:
-            reconnection_interval = 2**31
+            reconnection_interval = 2**2
         self.reconnection_interval = reconnection_interval
 
         self._nickname = nickname

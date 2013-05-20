@@ -185,7 +185,7 @@ class BatmanBot(SingleServerIRCBot):
             chat = "### INVALID UTF-8 ###"
         if c.server == self.main_server: 
             try:
-                self.log(datetime.now(),nick,chat)
+                #self.log(datetime.now(),nick,chat)
                 a = e.arguments()[0].split(":", 1)
                 if len(a) > 1 and irc_lower(a[0].strip()) == irc_lower(self.connection.get_nickname()):
                     said = a[1].strip().split()
@@ -261,9 +261,9 @@ class BatmanBot(SingleServerIRCBot):
         nick = nm_to_n(e.source())
         ch = self.channel
         if cmd == "disconnect":
-            self.disconnect()
+            self.disconnect("Batman is the hero Gotham deserves, but not the one it needs right now")
         elif cmd == "die":
-            self.die()
+            self.die("The Dark Knight Will Rise. Then Fear will find you again")
         elif cmd == "stats":
             for chname, chobj in self.channels.items():
                 c.privmsg(nick, "--- Channel statistics ---")
@@ -316,8 +316,10 @@ class BatmanBot(SingleServerIRCBot):
 
 def main():
     server=["irc.freenode.org"]
-    channel = "#ktmt.github.io" 
-    pswd = "GuessMe:D" 
+#    channel = "#ktmt.github.io" 
+    channel = "#test_irc" 
+#    pswd = "paktssmt" 
+    pswd = "" 
     nickname = ["BatmanBot"] 
     main_server = "irc.freenode.org"
 
