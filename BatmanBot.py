@@ -139,7 +139,7 @@ class BatmanBot(SingleServerIRCBot):
             rel = eval(s, {"__builtins__":globals()['__builtins__']}, self.safe_dict) 
         except:
             print traceback.format_exc()
-            rel = "OK" 
+            rel = s 
       
         #restore global namespace
         for joker_kaboom in builtins_blacklist:
@@ -261,9 +261,13 @@ class BatmanBot(SingleServerIRCBot):
         nick = nm_to_n(e.source())
         ch = self.channel
         if cmd == "disconnect":
-            self.disconnect("Batman is the hero Gotham deserves, but not the one it needs right now")
+            quote="Batman is the hero Gotham deserves, but not the one it needs right now"
+            c.privmsg(ch, quote)
+            self.disconnect(quote)
         elif cmd == "die":
-            self.die("The Dark Knight Will Rise. Then Fear will find you again")
+            quote="The Dark Knight Will Rise. Then Fear will find you again"
+            c.privmsg(ch, nick+": "+quote)
+            self.die(quote)
         elif cmd == "stats":
             for chname, chobj in self.channels.items():
                 c.privmsg(nick, "--- Channel statistics ---")
@@ -317,7 +321,7 @@ class BatmanBot(SingleServerIRCBot):
 def main():
     server=["irc.freenode.org"]
     channel = "#ktmt.github.io" 
-    pswd = "GuessMe:D" 
+    pswd = "paktssmt" 
     nickname = ["BatmanBot"] 
     main_server = "irc.freenode.org"
 
