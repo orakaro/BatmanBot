@@ -43,6 +43,7 @@ from sqlalchemy.orm import sessionmaker
 from table_def import ChatLog
 from ircbot import SingleServerIRCBot
 from irclib import nm_to_n, nm_to_h, irc_lower, ip_numstr_to_quad, ip_quad_to_numstr
+import config as CONFIG
 
 class BatmanBot(SingleServerIRCBot):
     pyflg=True
@@ -321,7 +322,7 @@ class BatmanBot(SingleServerIRCBot):
 def main():
     server=["irc.freenode.org"]
     channel = "#ktmt.github.io" 
-    pswd = "GuessMe:D" 
+    pswd = CONFIG.PASSWORD_CHANNEL 
     nickname = ["BatmanBot"] 
     main_server = "irc.freenode.org"
 
