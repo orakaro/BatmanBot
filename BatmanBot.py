@@ -320,11 +320,11 @@ class BatmanBot(SingleServerIRCBot):
             self.rep_log(c, e, param)
 
 def main():
-    server=["irc.freenode.org"]
-    channel = "#ktmt.github.io" 
-    pswd = CONFIG.PASSWORD_CHANNEL 
-    nickname = ["BatmanBot"] 
-    main_server = "irc.freenode.org"
+    server = CONFIG.SERVER
+    channel = CONFIG.CHANNEL 
+    pswd = CONFIG.PASSWORD
+    nickname = CONFIG.NICKNAME 
+    main_server = CONFIG.MAIN_SERVER 
 
     bot = BatmanBot(channel, pswd, nickname, server, main_server)
     bot.start()
