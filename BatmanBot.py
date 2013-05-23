@@ -321,7 +321,7 @@ class BatmanBot(SingleServerIRCBot):
 def main():
     server=["irc.freenode.org"]
     channel = "#ktmt.github.io" 
-    pswd = "paktssmt" 
+    pswd = "GuessMe:D" 
     nickname = ["BatmanBot"] 
     main_server = "irc.freenode.org"
 
