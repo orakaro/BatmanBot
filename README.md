@@ -4,7 +4,7 @@ Batmanbot s a simple IRCbot wrote by Python. It can be used to log channel chat,
 ## Installation
 * First create the db 
 ```bash
-sqlite3 db/irclog.db << db/initdb.sql
+python table_def.py
 ```
 * Create config file ```config.py``` in top level directory
 ```python
