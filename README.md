@@ -19,3 +19,8 @@ MAIN_SERVER = "irc.freenode.org"
 ```bash
 python BatmanBot.py
 ```
+or more :->
+```bash
+python RobinBot.py
+python GothamLive.py
+```
