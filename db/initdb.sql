@@ -1,0 +1,10 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE chatlog (
+	id INTEGER NOT NULL, 
+	date DATETIME, 
+	user VARCHAR, 
+	content VARCHAR, 
+	PRIMARY KEY (id)
+);
+COMMIT;
