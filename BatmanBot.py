@@ -288,7 +288,7 @@ class BatmanBot(SingleServerIRCBot):
                 ip_quad_to_numstr(dcc.localaddress),
                 dcc.localport))
         elif cmd == "chatlog":
-            c.privmsg(ch, "Want to check the web first ? http://133.19.60.91:5000/irc/0 ")
+            c.privmsg(ch, "Want to check the web first ? http://irc.launchvn.com/ ")
             c.privmsg(ch, "Or not? Choose day and check private message (ex: \"2013-04-18\"): ")
         elif re.match(r'(\d{4}-\d{2}-\d{2})',cmd):
             param = cmd
