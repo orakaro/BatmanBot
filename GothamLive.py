@@ -12,8 +12,8 @@
 #
 #
 
-""" 
-   Gotham Live Channel 
+"""
+   Gotham Live Channel
    spy from spy_channel and push to main
 """
 
@@ -24,20 +24,22 @@ class GothamLive(SingleServerIRCBot):
     main=""
     main_chanel=""
     spy_channel=""
-    def __init__(self, main_channel, spy_channel, nickname, server, main):
+    pswd=""
+    def __init__(self, main_channel, pswd, spy_channel, nickname, server, main):
         SingleServerIRCBot.__init__(self, [(s, 6667) for s in server], main, nickname, nickname)
         self.main = main
-        self.main_channel = main_channel 
-        self.spy_channel = spy_channel 
+        self.main_channel = main_channel
+        self.spy_channel = spy_channel
+        self.pswd = pswd
 
-#   General    
+#   General
     def on_nicknameinuse(self, c, e):
         c.nick(c.get_nickname() + "_")
 
     def on_welcome(self, c, e):
         print "welcome"
-        if c.server == self.main: 
-            c.join(self.main_channel)
+        if c.server == self.main:
+            c.join(self.main_channel, self.pswd)
         else:
             c.join(self.spy_channel)
         main_connection = self.get_conn(self.main)
@@ -64,8 +66,8 @@ class GothamLive(SingleServerIRCBot):
         except:
             chat = "### INVALID UTF-8 ###"
         nick = nm_to_n(e.source())
-        if c.server != self.main: 
-           print "live from co" 
+        if c.server != self.main:
+           print "live from co"
            main_connection = self.get_conn(self.main)
            main_connection.privmsg(self.main_channel, chat.encode('utf-8'))
 
@@ -76,13 +78,14 @@ class GothamLive(SingleServerIRCBot):
         return None
 
 def main():
-    server=["irc.freenode.org","irc.freenode.org"]
-    channel = "#ktmt.github" 
-    spy_channel = "#python"
-    nickname = ["DTVD___","GothamLive"]
-    main = "irc.freenode.org"
+    server = CONFIG.LIVE_SERVER
+    channel = CONFIGLIVE_CHANNEL
+    pswd = CONFIG.LIVE_CHANNEL_PASSWORD
+    spy_channel = CONFIG.LIVE_SPY_CHANNEL
+    nickname = CONFIG.LIVE_NICKNAME
+    main = CONFIG.LIVE_MAIN_SERVER
 
-    bot = GothamLive(channel, spy_channel, nickname, server, main)
+    bot = GothamLive(channel, pswd, spy_channel, nickname, server, main)
     bot.start()
 
 if __name__ == "__main__":

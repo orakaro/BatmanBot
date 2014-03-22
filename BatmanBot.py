@@ -13,7 +13,7 @@
 #
 
 """ Batman bot listen and log all chat to sqlite and print out with commands
-     
+
     Before reading this , remember that Batman Rocks The Gotham, and Python Rocks The World
 
     stats -- Prints some channel information.
@@ -27,9 +27,9 @@
 
     chatlog -- The bot will ask you provide date
 
-    chatlog %Y-%m-%d -- print log chat 
+    chatlog %Y-%m-%d -- print log chat
 
-    %Y-%m-%d -- print log chat 
+    %Y-%m-%d -- print log chat
 
     ** All calculator capable of Python Iteractive Shell (with no space)
 
@@ -39,7 +39,7 @@ import re, math, sys, traceback
 from time import sleep
 from datetime import datetime
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker 
+from sqlalchemy.orm import sessionmaker
 from table_def import ChatLog
 from ircbot import SingleServerIRCBot
 from irclib import nm_to_n, nm_to_h, irc_lower, ip_numstr_to_quad, ip_quad_to_numstr
@@ -55,7 +55,7 @@ class BatmanBot(SingleServerIRCBot):
     def __init__(self, channel, pswd, nickname, server, main_server):
         SingleServerIRCBot.__init__(self, [(s, 6667) for s in server], main_server, nickname, nickname)
         self.channel = channel
-        self.pswd = pswd 
+        self.pswd = pswd
         self.engine = create_engine('sqlite:///db/irclog.db', echo=True)
         self.main_server = main_server
 
@@ -73,7 +73,7 @@ class BatmanBot(SingleServerIRCBot):
         res = session.query(ChatLog).filter("strftime('%Y-%m-%d',date) =:qdate").params(qdate=date).all()
         return res
 
-#   General    
+#   General
     def on_nicknameinuse(self, c, e):
         c.nick(c.get_nickname() + "_")
 
@@ -113,17 +113,17 @@ class BatmanBot(SingleServerIRCBot):
     def safe_eval(self, s):
         print "safe_eval"
         builtins_blacklist=["__import__", "exit", "SystemExit", "compile", "execfile", "memoryview", "quit"]
-        #backup all the bad things 
+        #backup all the bad things
         backup = {}
         backup['sys'] = globals()['sys']
         try:
             for joker_kaboom in builtins_blacklist:
                 backup_str = "globals()['__builtins__']."+joker_kaboom
                 # backup_str return  globals()['__builtins__'].__import__  ..etc
-                backup[joker_kaboom] = eval(backup_str) 
-        except: 
+                backup[joker_kaboom] = eval(backup_str)
+        except:
             print traceback.format_exc()
-        
+
         #delete them from global namespace
         del(globals()['sys'])
         try:
@@ -132,16 +132,16 @@ class BatmanBot(SingleServerIRCBot):
                 del_str = "del("+kaboom+")"
                 # del_str return  del(globals()['__builtins__'].__import__)  ..etc
                 exec(del_str)
-        except: 
-            print traceback.format_exc()
-      
-        # Batman evaluate you
-        try:
-            rel = eval(s, {"__builtins__":globals()['__builtins__']}, self.safe_dict) 
         except:
             print traceback.format_exc()
-            rel = s 
-      
+
+        # Batman evaluate you
+        try:
+            rel = eval(s, {"__builtins__":globals()['__builtins__']}, self.safe_dict)
+        except:
+            print traceback.format_exc()
+            rel = s
+
         #restore global namespace
         for joker_kaboom in builtins_blacklist:
             takeback_str = "globals()['__builtins__']."+joker_kaboom
@@ -150,7 +150,7 @@ class BatmanBot(SingleServerIRCBot):
         globals()['sys'] = backup['sys']
 
         return rel
-      
+
     def bot_talking(self, nick):
         ignore_list = ["TaskBot", "bot1"]
         if nick in ignore_list: return True
@@ -184,7 +184,7 @@ class BatmanBot(SingleServerIRCBot):
             chat = unicode(e.arguments()[0], "utf-8")
         except:
             chat = "### INVALID UTF-8 ###"
-        if c.server == self.main_server: 
+        if c.server == self.main_server:
             try:
                 self.log(datetime.now(),nick,chat)
                 a = e.arguments()[0].split(":", 1)
@@ -193,7 +193,7 @@ class BatmanBot(SingleServerIRCBot):
                     if not self.validate(a[1].strip()):
                         c.privmsg(ch, nick+": Haha I got you =)")
                         return
-                    if len(said)==0: 
+                    if len(said)==0:
                         self.yessir(c, e)
                     elif len(said)==1:
                         cmd = said[0]
@@ -209,8 +209,8 @@ class BatmanBot(SingleServerIRCBot):
             except Exception, e:
                 c.privmsg(ch, str(e))
                 print traceback.format_exc()
-        else: 
-           print "live from co" 
+        else:
+           print "live from co"
            main_co = self.get_conn(self.main_server)
            main_co.privmsg(ch, chat)
 
@@ -219,7 +219,7 @@ class BatmanBot(SingleServerIRCBot):
             if key[0]==server_name:
                 return value
         return None
-    
+
 #   Reply part
     def yessir(self, c, e):
         nick = nm_to_n(e.source())
@@ -227,7 +227,7 @@ class BatmanBot(SingleServerIRCBot):
         c.privmsg(ch, nick+": Yes Sir ?")
         c.privmsg(ch, nick+": You can ask/privmsg me \"stats\" or \"chatlog %Y-%m-%d\" or \"dcc\" if want to chat dcc with me")
         c.privmsg(ch, nick+": Or do you just want to chat with a calculator :D")
-         
+
     def said_you_said_me(self, c, e, cmd):
         nick = nm_to_n(e.source())
         ch = self.channel
@@ -246,7 +246,7 @@ class BatmanBot(SingleServerIRCBot):
             c.privmsg(ch, "Nice day "+nick)
         else:
             c.privmsg(ch, cmd)
- 
+
     def rep_log(self, c, e, param):
         nick = nm_to_n(e.source())
         ch = self.channel
@@ -254,7 +254,7 @@ class BatmanBot(SingleServerIRCBot):
         c.privmsg(nick, "Total chat line: "+str(len(res)))
         c.privmsg(nick, "--- Chat Log Start ---")
         for r in res:
-            sleep(1) 
+            sleep(1)
             c.privmsg(nick,(r.date.strftime('%Y-%m-%d:%H:%M:%S')+" <"+r.user+"> "+r.content).encode('utf-8'))
         c.privmsg(nick, "--- Chat Log End ---")
 
@@ -294,10 +294,10 @@ class BatmanBot(SingleServerIRCBot):
             param = cmd
             self.rep_log(c, e, param)
         elif cmd == "pythonmode":
-            self.pyflg=True    
+            self.pyflg=True
             c.privmsg(ch, "Welcome to "+cmd)
         elif cmd == "chatmode":
-            self.pyflg=False    
+            self.pyflg=False
             self.buf=""
             self.safe_dict={}
             c.privmsg(ch, "Welcome to "+cmd)
@@ -321,10 +321,10 @@ class BatmanBot(SingleServerIRCBot):
 
 def main():
     server = CONFIG.SERVER
-    channel = CONFIG.CHANNEL 
+    channel = CONFIG.CHANNEL
     pswd = CONFIG.PASSWORD
-    nickname = CONFIG.NICKNAME 
-    main_server = CONFIG.MAIN_SERVER 
+    nickname = CONFIG.NICKNAME
+    main_server = CONFIG.MAIN_SERVER
 
     bot = BatmanBot(channel, pswd, nickname, server, main_server)
     bot.start()
