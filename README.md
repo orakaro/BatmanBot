@@ -24,3 +24,7 @@ or more :->
 python RobinBot.py
 python GothamLive.py
 ```
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/DTVD/batmanbot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
